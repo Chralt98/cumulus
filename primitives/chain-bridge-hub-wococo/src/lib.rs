@@ -20,14 +20,20 @@
 //! but actually this is just reexported BridgeHubRococo stuff, because they are supposed to be
 //! identical, at least uses the same parachain runtime
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 // Re-export only what is really needed
 pub use bp_bridge_hub_rococo::{
 	account_info_storage_key, AccountId, AccountPublic, Address, Balance, BlockNumber, Hash,
 	Hashing, Header, Nonce, SS58Prefix, Signature, SignedBlock, SignedExtensions,
 	UncheckedExtrinsic, WeightToFee, EXTRA_STORAGE_PROOF_SIZE,
+	MAX_UNCONFIRMED_MESSAGES_IN_CONFIRMATION_TX, MAX_UNREWARDED_RELAYERS_IN_CONFIRMATION_TX,
 };
 use bp_runtime::decl_bridge_finality_runtime_apis;
 
 pub type BridgeHubWococo = bp_bridge_hub_rococo::BridgeHubRococo;
+
+/// Identifier of BridgeHubWococo in the Wococo relay chain.
+pub const BRIDGE_HUB_WOCOCO_PARACHAIN_ID: u32 = 1013;
 
 decl_bridge_finality_runtime_apis!(wococo);
