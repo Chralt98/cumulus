@@ -735,7 +735,6 @@ dependencies = [
  "bitvec",
  "bp-runtime",
  "frame-support",
- "frame-system",
  "hex",
  "hex-literal",
  "impl-trait-for-tuples",
@@ -755,7 +754,6 @@ dependencies = [
  "frame-support",
  "parity-scale-codec",
  "scale-info",
- "serde",
  "sp-core",
 ]
 
@@ -772,11 +770,9 @@ dependencies = [
  "parity-util-mem",
  "scale-info",
  "serde",
- "sp-api",
  "sp-core",
  "sp-runtime",
  "sp-std",
- "sp-version",
 ]
 
 [[package]]
@@ -794,16 +790,10 @@ dependencies = [
 name = "bp-rococo"
 version = "0.1.0"
 dependencies = [
- "bp-messages",
  "bp-polkadot-core",
  "bp-runtime",
  "frame-support",
- "parity-scale-codec",
- "smallvec",
  "sp-api",
- "sp-runtime",
- "sp-std",
- "sp-version",
 ]
 
 [[package]]
@@ -845,14 +835,10 @@ dependencies = [
 name = "bp-wococo"
 version = "0.1.0"
 dependencies = [
- "bp-messages",
  "bp-polkadot-core",
  "bp-rococo",
  "bp-runtime",
- "parity-scale-codec",
  "sp-api",
- "sp-runtime",
- "sp-std",
 ]
 
 [[package]]
@@ -5696,10 +5682,8 @@ dependencies = [
  "frame-support",
  "frame-system",
  "log",
- "num-traits",
  "parity-scale-codec",
  "scale-info",
- "serde",
  "sp-core",
  "sp-finality-grandpa",
  "sp-io",
@@ -5724,7 +5708,6 @@ dependencies = [
  "pallet-balances",
  "parity-scale-codec",
  "scale-info",
- "serde",
  "sp-core",
  "sp-io",
  "sp-runtime",
@@ -5747,8 +5730,6 @@ dependencies = [
  "pallet-bridge-grandpa",
  "parity-scale-codec",
  "scale-info",
- "serde",
- "sp-core",
  "sp-io",
  "sp-runtime",
  "sp-std",
@@ -5766,12 +5747,10 @@ dependencies = [
  "frame-support",
  "frame-system",
  "log",
- "num-traits",
  "pallet-balances",
  "pallet-bridge-messages",
  "parity-scale-codec",
  "scale-info",
- "serde",
  "sp-arithmetic",
  "sp-core",
  "sp-io",
