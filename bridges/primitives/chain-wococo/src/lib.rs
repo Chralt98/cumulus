@@ -18,19 +18,9 @@
 // RuntimeApi generated functions
 #![allow(clippy::too_many_arguments)]
 
-use bp_messages::{
-	InboundMessageDetails, LaneId, MessageNonce, MessagePayload, OutboundMessageDetails,
-};
-use sp_runtime::FixedU128;
-use sp_std::prelude::*;
-
 pub use bp_polkadot_core::*;
-// Rococo runtime = Wococo runtime
-pub use bp_rococo::{
-	SS58Prefix, WeightToFee, EXISTENTIAL_DEPOSIT, PARAS_PALLET_NAME,
-	PAY_INBOUND_DISPATCH_FEE_WEIGHT, VERSION,
-};
-use bp_runtime::decl_bridge_runtime_apis;
+pub use bp_rococo::{SS58Prefix, PARAS_PALLET_NAME};
+use bp_runtime::decl_bridge_finality_runtime_apis;
 
 /// Wococo Chain
 pub type Wococo = PolkadotLike;
@@ -40,11 +30,9 @@ pub type Wococo = PolkadotLike;
 ///
 /// Note that since this is a target sessions may change before/after this time depending on network
 /// conditions.
-pub const SESSION_LENGTH: BlockNumber = time_units::MINUTES;
+pub const SESSION_LENGTH: BlockNumber = MINUTES;
 
 /// Name of the With-Wococo GRANDPA pallet instance that is deployed at bridged chains.
 pub const WITH_WOCOCO_GRANDPA_PALLET_NAME: &str = "BridgeWococoGrandpa";
-/// Name of the With-Wococo messages pallet instance that is deployed at bridged chains.
-pub const WITH_WOCOCO_MESSAGES_PALLET_NAME: &str = "BridgeWococoMessages";
 
-decl_bridge_runtime_apis!(wococo);
+decl_bridge_finality_runtime_apis!(wococo);

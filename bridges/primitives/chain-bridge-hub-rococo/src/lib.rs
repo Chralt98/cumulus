@@ -17,6 +17,8 @@
 //! Module with configuration which reflects BridgeHubRococo runtime setup (AccountId, Headers,
 //! Hashes...)
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 pub use bp_polkadot_core::*;
 use bp_runtime::decl_bridge_finality_runtime_apis;
 use frame_support::{parameter_types, sp_runtime::MultiAddress};
@@ -26,6 +28,9 @@ pub type WeightToFee = frame_support::weights::IdentityFee<Balance>;
 
 /// The address format for describing accounts.
 pub type Address = MultiAddress<AccountId, ()>;
+
+/// Identifier of BridgeHubRococo in the Rococo relay chain.
+pub const BRIDGE_HUB_ROCOCO_PARACHAIN_ID: u32 = 1013;
 
 parameter_types! {
 	pub const SS58Prefix: u16 = 42;
