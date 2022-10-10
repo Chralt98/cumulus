@@ -2005,6 +2005,8 @@ dependencies = [
  "polkadot-core-primitives",
  "polkadot-parachain 0.9.27",
  "polkadot-primitives",
+ "polkadot-runtime-common",
+ "sp-io",
  "sp-runtime",
  "sp-std",
  "sp-trie",
@@ -5823,7 +5825,7 @@ dependencies = [
 [[package]]
 name = "pallet-contracts-primitives"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate?branch=master#493b58bd4a475080d428ce47193ee9ea9757a808"
+source = "git+https://github.com/paritytech//substrate?branch=sv-locked-for-gav-xcm-v3-and-bridges#57e3486d9c7bb4deaef33cf9ba2da083b4e40314"
 dependencies = [
  "bitflags",
  "parity-scale-codec",
@@ -5838,7 +5840,7 @@ dependencies = [
 [[package]]
 name = "pallet-contracts-rpc"
 version = "4.0.0-dev"
-source = "git+https://github.com/paritytech/substrate?branch=master#493b58bd4a475080d428ce47193ee9ea9757a808"
+source = "git+https://github.com/paritytech//substrate?branch=sv-locked-for-gav-xcm-v3-and-bridges#57e3486d9c7bb4deaef33cf9ba2da083b4e40314"
 dependencies = [
  "jsonrpsee",
  "pallet-contracts-primitives",
@@ -5855,7 +5857,7 @@ dependencies = [
 [[package]]
 name = "pallet-contracts-rpc-runtime-api"
 version = "4.0.0-dev"
-source = "git+https://github.com/paritytech/substrate?branch=master#493b58bd4a475080d428ce47193ee9ea9757a808"
+source = "git+https://github.com/paritytech//substrate?branch=sv-locked-for-gav-xcm-v3-and-bridges#57e3486d9c7bb4deaef33cf9ba2da083b4e40314"
 dependencies = [
  "pallet-contracts-primitives",
  "parity-scale-codec",
