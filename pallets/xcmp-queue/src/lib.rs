@@ -44,13 +44,14 @@ use cumulus_primitives_core::{
 	ParaId, XcmpMessageFormat, XcmpMessageHandler, XcmpMessageSource,
 };
 use frame_support::{
-	traits::EnsureOrigin,
+	traits::{EnsureOrigin, Get},
 	weights::{constants::WEIGHT_PER_MILLIS, Weight},
 };
 use rand_chacha::{
 	rand_core::{RngCore, SeedableRng},
 	ChaChaRng,
 };
+use polkadot_runtime_common::xcm_sender::ConstantPrice;
 use scale_info::TypeInfo;
 use sp_runtime::{traits::Hash, RuntimeDebug};
 use sp_std::{convert::TryFrom, prelude::*};
@@ -98,6 +99,9 @@ pub mod pallet {
 		/// The conversion function used to attempt to convert an XCM `MultiLocation` origin to a
 		/// superuser origin.
 		type ControllerOriginConverter: ConvertOrigin<Self::Origin>;
+
+		/// The price for delivering an XCM to a sibling parachain destination.
+		type PriceForSiblingDelivery: PriceForSiblingDelivery;
 
 		/// The weight information of this pallet.
 		type WeightInfo: WeightInfo;
@@ -273,7 +277,7 @@ pub mod pallet {
 		/// An upward message was sent to the relay chain.
 		UpwardMessageSent { message_hash: Option<T::Hash> },
 		/// An HRMP message was sent to a sibling parachain.
-		XcmpMessageSent { message_hash: Option<T::Hash> },
+		XcmpMessageSent { message_hash: Option<XcmHash> },
 		/// An XCM exceeded the individual message weight budget.
 		OverweightEnqueued {
 			sender: ParaId,
@@ -1114,37 +1118,59 @@ impl<T: Config> XcmpMessageSource for Pallet<T> {
 	}
 }
 
+pub trait PriceForSiblingDelivery {
+	fn price_for_sibling_delivery(id: ParaId, message: &Xcm<()>) -> MultiAssets;
+}
+
+impl PriceForSiblingDelivery for () {
+	fn price_for_sibling_delivery(_: ParaId, _: &Xcm<()>) -> MultiAssets {
+		MultiAssets::new()
+	}
+}
+
+impl<T: Get<MultiAssets>> PriceForSiblingDelivery for ConstantPrice<T> {
+	fn price_for_sibling_delivery(_: ParaId, _: &Xcm<()>) -> MultiAssets {
+		T::get()
+	}
+}
+
 /// Xcm sender for sending to a sibling parachain.
 impl<T: Config> SendXcm for Pallet<T> {
-	type Ticket = ();
+	type Ticket = (ParaId, VersionedXcm<()>);
 
-	fn validate(destination: &mut Option<MultiLocation>, message: &mut Option<Xcm<()>>) -> SendResult<Self::Ticket> {
-		todo!("TODO: hack - fix after rebase")
+	fn validate(
+		dest: &mut Option<MultiLocation>,
+		msg: &mut Option<Xcm<()>>,
+	) -> SendResult<(ParaId, VersionedXcm<()>)> {
+		let d = dest.take().ok_or(SendError::MissingArgument)?;
+		let xcm = msg.take().ok_or(SendError::MissingArgument)?;
+
+		match &d {
+			// An HRMP message for a sibling parachain.
+			MultiLocation { parents: 1, interior: X1(Parachain(id)) } => {
+				let id = ParaId::from(*id);
+				let price = T::PriceForSiblingDelivery::price_for_sibling_delivery(id, &xcm);
+				let versioned_xcm = T::VersionWrapper::wrap_version(&d, xcm)
+					.map_err(|()| SendError::DestinationUnsupported)?;
+				Ok(((id, versioned_xcm), price))
+			},
+			// Anything else is unhandled. This includes a message this is meant for us.
+			_ => {
+				*dest = Some(d);
+				Err(SendError::NotApplicable)
+			},
+		}
 	}
 
-	fn deliver(ticket: Self::Ticket) -> Result<XcmHash, SendError> {
-		todo!("TODO: hack - fix after rebase")
+	fn deliver((id, xcm): (ParaId, VersionedXcm<()>)) -> Result<XcmHash, SendError> {
+		let hash = xcm.using_encoded(sp_io::hashing::blake2_256);
+
+		match Self::send_fragment(id, XcmpMessageFormat::ConcatenatedVersionedXcm, xcm) {
+			Ok(_) => {
+				Self::deposit_event(Event::XcmpMessageSent { message_hash: Some(hash) });
+				Ok(hash)
+			},
+			Err(e) => Err(SendError::Transport(<&'static str>::from(e))),
+		}
 	}
-	// fn send_xcm(dest: impl Into<MultiLocation>, msg: Xcm<()>) -> Result<(), SendError> {
-	// 	let dest = dest.into();
-	//
-	// 	match &dest {
-	// 		// An HRMP message for a sibling parachain.
-	// 		MultiLocation { parents: 1, interior: X1(Parachain(id)) } => {
-	// 			let versioned_xcm = T::VersionWrapper::wrap_version(&dest, msg)
-	// 				.map_err(|()| SendError::DestinationUnsupported)?;
-	// 			let hash = T::Hashing::hash_of(&versioned_xcm);
-	// 			Self::send_fragment(
-	// 				(*id).into(),
-	// 				XcmpMessageFormat::ConcatenatedVersionedXcm,
-	// 				versioned_xcm,
-	// 			)
-	// 			.map_err(|e| SendError::Transport(<&'static str>::from(e)))?;
-	// 			Self::deposit_event(Event::XcmpMessageSent { message_hash: Some(hash) });
-	// 			Ok(())
-	// 		},
-	// 		// Anything else is unhandled. This includes a message this is meant for us.
-	// 		_ => Err(SendError::CannotReachDestination(dest, msg)),
-	// 	}
-	// }
 }
