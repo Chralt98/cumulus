@@ -9,11 +9,11 @@ codec = { package = "parity-scale-codec", version = "3.0.0", features = [ "deriv
 scale-info = { version = "2.2.0", default-features = false, features = ["derive"] }
 
 # Substrate
-frame-support = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
-frame-system = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
-sp-io = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
-sp-runtime = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
-sp-std = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
+frame-support = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "aa/safely-destroy-large-assets" }
+frame-system = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "aa/safely-destroy-large-assets" }
+sp-io = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "aa/safely-destroy-large-assets" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "aa/safely-destroy-large-assets" }
+sp-std = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "aa/safely-destroy-large-assets" }
 
 # Polkadot
 xcm = { git = "https://github.com/paritytech/polkadot", default-features = false, branch = "master" }
@@ -22,8 +22,8 @@ xcm = { git = "https://github.com/paritytech/polkadot", default-features = false
 cumulus-primitives-core = { path = "../../primitives/core", default-features = false }
 
 [dev-dependencies]
-sp-core = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
-sp-version = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "master" }
+sp-core = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "aa/safely-destroy-large-assets" }
+sp-version = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "aa/safely-destroy-large-assets" }
 
 [features]
 default = [ "std" ]
